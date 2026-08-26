@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1980년대 검열 신문</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Noto Serif KR', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .newspaper {
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8dcc8 100%);
+            width: 100%;
+            max-width: 700px;
+            padding: 50px;
+            border: 6px solid #654321;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .newspaper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+            pointer-events: none;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 56px;
+            font-weight: 900;
+            color: #1a1a1a;
+            letter-spacing: 5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #666;
+            letter-spacing: 3px;
+        }
+
+        .input-area {
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #333;
+            background-color: #fff;
+            margin-bottom: 10px;
+            font-family: 'Noto Serif KR', serif;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #666;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            background-color: #333;
+            color: #f5e6d3;
+            border: 2px solid #333;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Noto Serif KR', serif;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        button:active {
+            background-color: #1a1a1a;
+        }
+
+        .display-area {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 25px;
+            min-height: 250px;
+            border: 2px solid #333;
+            font-size: 20px;
+            line-height: 2;
+            max-height: 400px;
+            overflow-y: auto;
+            position: relative;
+            font-family: 'Noto Serif KR', serif;
+        }
+
+        .display-area::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+            pointer-events: none;
+        }
+
+        .text-line {
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            word-break: break-all;
+        }
+
+        .count-display {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-family: 'Noto Serif KR', serif;
+            font-weight: bold;
+            border: 1px solid #666;
+            z-index: 100;
+        }
+
+        /* 경고 화면 */
+        .warning-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #4a0000;
+            display: none;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: warningPulse 0.12s infinite;
+        }
+
+        .warning-screen.active {
+            display: flex;
+        }
+
+        @keyframes warningPulse {
+            0% {
+                background: #4a0000;
+                transform: translate(0, 0);
+            }
+            20% {
+                background: #6b0000;
+                transform: translate(-3px, 2px);
+            }
+            40% {
+                background: #4a0000;
+                transform: translate(3px, -2px);
+            }
+            60% {
+                background: #8b0000;
+                transform: translate(-2px, -3px);
+            }
+            80% {
+                background: #4a0000;
+                transform: translate(2px, 3px);
+            }
+            100% {
+                background: #4a0000;
+                transform: translate(0, 0);
+            }
+        }
+
+        .warning-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.05) 0px,
+                rgba(255, 255, 255, 0.05) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .warning-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #ff6b6b;
+            font-size: clamp(24px, 5vw, 56px);
+            font-weight: 900;
+            letter-spacing: 3px;
+            line-height: 1.8;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px rgba(255, 0, 0, 0.5);
+            animation: warnTextFlash 0.2s infinite;
+        }
+
+        @keyframes warnTextFlash {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        .glitch-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .glitch-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 0, 0, 0.3);
+            animation: glitchMove 0.1s infinite;
+        }
+
+        @keyframes glitchMove {
+            0% {
+                transform: translateX(-10px);
+            }
+            50% {
+                transform: translateX(10px);
+            }
+            100% {
+                transform: translateX(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="newspaper">
+        <div class="content">
+            <div class="header">
+                <h1>신문</h1>
+                <p>1980년 대</p>
+            </div>
+            
+            <div class="input-area">
+                <input type="text" id="textInput" placeholder="글자를 입력하세요" inputmode="text">
+                <button id="sendBtn">입력</button>
+            </div>
+            
+            <div class="display-area" id="displayArea"></div>
+        </div>
+    </div>
+
+    <div class="count-display">
+        검열: <span id="censorCount">0</span>/5
+    </div>
+
+    <div class="warning-screen" id="warningScreen">
+        <div class="glitch-lines" id="glitchContainer"></div>
+        <div class="warning-content">
+            ⚠️<br>
+            당신은<br>
+            중앙정부의<br>
+            추적을<br>
+            받고<br>
+            있습니다<br>
+            ⚠️
+        </div>
+    </div>
+
+    <script>
+        let censorCount = 0;
+        let isWarningActive = false;
+
+        function sendText() {
+            const textInput = document.getElementById('textInput');
+            const text = textInput.value.trim();
+
+            if (text.length === 0) return;
+
+            const line = document.createElement('div');
+            line.className = 'text-line';
+            line.textContent = text;
+
+            const displayArea = document.getElementById('displayArea');
+            displayArea.appendChild(line);
+            displayArea.scrollTop = displayArea.scrollHeight;
+
+            textInput.value = '';
+
+            setTimeout(() => {
+                let censored = '';
+                for (let i = 0; i < text.length; i++) {
+                    if (text[i] === ' ') {
+                        censored += ' ';
+                    } else {
+                        censored += '█';
+                    }
+                }
+                line.textContent = censored;
+
+                censorCount++;
+                document.getElementById('censorCount').textContent = censorCount;
+
+                if (censorCount >= 5 && !isWarningActive) {
+                    isWarningActive = true;
+                    activateWarning();
+                }
+            }, 1000);
+
+            textInput.focus();
+        }
+
+        function activateWarning() {
+            const warningScreen = document.getElementById('warningScreen');
+            const glitchContainer = document.getElementById('glitchContainer');
+
+            warningScreen.classList.add('active');
+
+            // 글리치 라인 생성
+            for (let i = 0; i < 15; i++) {
+                const line = document.createElement('div');
+                line.className = 'glitch-line';
+                line.style.top = Math.random() * 100 + '%';
+                line.style.animationDelay = Math.random() * 0.1 + 's';
+                glitchContainer.appendChild(line);
+            }
+        }
+
+        document.getElementById('sendBtn').addEventListener('click', sendText);
+        document.getElementById('textInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendText();
+            }
+        });
+
+        document.getElementById('textInput').focus();
+    </script>
+</body>
+</html>
