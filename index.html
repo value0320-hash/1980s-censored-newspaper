@@ -7,43 +7,74 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap');
 
+        :root {
+            --paper: #f4e7cf;
+            --paper-deep: #e5d7b7;
+            --ink: #171412;
+            --dark: #1d1b1a;
+            --border: #4a311d;
+            --accent: #7a1d1d;
+            --muted: #7b6959;
+            --warning-red: #c80d0d;
+            --warning-dark: #310909;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
         }
 
         body {
-            background-color: #1a1a1a;
-            font-family: 'Noto Serif KR', serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+            background:
+                radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 60%),
+                linear-gradient(135deg, #111 0%, #1c1c1c 100%);
+            font-family: 'Noto Serif KR', serif;
+            color: var(--ink);
         }
 
         .newspaper {
-            background: linear-gradient(135deg, #f5e6d3 0%, #e8dcc8 100%);
-            width: 100%;
-            max-width: 700px;
-            padding: 50px;
-            border: 6px solid #654321;
             position: relative;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.1);
+            width: min(820px, 100%);
+            background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(0,0,0,0.02) 100%), var(--paper);
+            border: 7px solid var(--border);
+            box-shadow:
+                0 18px 42px rgba(0, 0, 0, 0.45),
+                inset 0 0 38px rgba(0,0,0,0.08);
+            padding: 26px 30px 18px;
+            overflow: hidden;
+        }
+
+        .newspaper::before,
+        .newspaper::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
         }
 
         .newspaper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-                repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.025) 0,
+                rgba(0, 0, 0, 0.025) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+        }
+
+        .newspaper::after {
+            background: linear-gradient(90deg, rgba(0,0,0,0.05), transparent 18%, transparent 82%, rgba(0,0,0,0.05));
         }
 
         .content {
@@ -51,233 +82,329 @@
             z-index: 1;
         }
 
-        .header {
+        .masthead {
             text-align: center;
-            border-bottom: 3px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            border-top: 3px solid var(--ink);
+            border-bottom: 3px double var(--ink);
+            padding: 10px 0 8px;
+            margin-bottom: 14px;
         }
 
-        .header h1 {
-            font-size: 56px;
-            font-weight: 900;
-            color: #1a1a1a;
-            letter-spacing: 5px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            font-size: 14px;
-            color: #666;
+        .small-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            font-size: 12px;
             letter-spacing: 3px;
+            color: var(--muted);
+            text-transform: uppercase;
         }
 
-        .input-area {
-            margin-bottom: 25px;
+        .issue-name {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 8px 0 4px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            font-size: clamp(28px, 5vw, 54px);
+            line-height: 1;
+        }
+
+        .issue-name .left, .issue-name .right {
+            font-size: clamp(18px, 3vw, 28px);
+            color: var(--accent);
+        }
+
+        .subhead {
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 4px;
+            color: var(--muted);
+            border-bottom: 1px solid rgba(0,0,0,0.25);
+            padding-bottom: 12px;
+        }
+
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 0.9fr;
+            gap: 18px;
+            margin: 18px 0 14px;
+        }
+
+        .headline-box {
+            position: relative;
+            border: 2px solid rgba(0,0,0,0.7);
+            padding: 15px 16px 12px;
+            background: rgba(255,255,255,0.18);
+        }
+
+        .headline-box h2 {
+            font-size: clamp(20px, 2.5vw, 30px);
+            line-height: 1.25;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .headline-box p {
+            color: rgba(0,0,0,0.75);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .article-box {
+            border-left: 3px solid var(--ink);
+            padding-left: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .article-box .tag {
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .article-box h3 {
+            font-size: clamp(16px, 2vw, 24px);
+            line-height: 1.3;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .article-box p {
+            font-size: 13px;
+            line-height: 1.7;
+            color: rgba(0,0,0,0.8);
+        }
+
+        .input-panel {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin: 18px 0 18px;
+            padding: 12px 14px;
+            border: 2px solid rgba(0,0,0,0.7);
+            background: rgba(255,255,255,0.2);
         }
 
         input {
             width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            border: 2px solid #333;
-            background-color: #fff;
-            margin-bottom: 10px;
+            border: 2px solid rgba(0,0,0,0.85);
+            background: rgba(255,255,255,0.9);
+            padding: 16px 18px;
+            font-size: 18px;
             font-family: 'Noto Serif KR', serif;
-            -webkit-appearance: none;
-            appearance: none;
+            color: var(--ink);
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
         }
 
         input:focus {
             outline: none;
-            border-color: #666;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            border-color: rgba(0,0,0,0.95);
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
         }
 
         button {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            background-color: #333;
-            color: #f5e6d3;
-            border: 2px solid #333;
-            font-weight: bold;
-            cursor: pointer;
+            background: var(--ink);
+            color: var(--paper);
+            border: 2px solid var(--ink);
+            padding: 14px 24px;
+            min-width: 120px;
             font-family: 'Noto Serif KR', serif;
-            -webkit-appearance: none;
-            appearance: none;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.12s ease, background 0.2s ease;
+        }
+
+        button:hover {
+            background: #2a2624;
         }
 
         button:active {
-            background-color: #1a1a1a;
+            transform: translateY(1px) scale(0.99);
         }
 
         .display-area {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 25px;
-            min-height: 250px;
-            border: 2px solid #333;
-            font-size: 20px;
-            line-height: 2;
-            max-height: 400px;
+            position: relative;
+            min-height: 240px;
+            max-height: 390px;
             overflow-y: auto;
-            position: relative;
-            font-family: 'Noto Serif KR', serif;
+            background: rgba(255,255,255,0.22);
+            border: 2px solid rgba(0,0,0,0.8);
+            padding: 16px;
         }
 
-        .display-area::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-                repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-            pointer-events: none;
+        .display-area::-webkit-scrollbar {
+            width: 10px;
         }
 
-        .text-line {
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-            word-break: break-all;
+        .display-area::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.28);
+        }
+
+        .entry {
+            margin-bottom: 16px;
+            padding: 10px 12px;
+            border-left: 3px solid rgba(0,0,0,0.7);
+            background: rgba(255,255,255,0.14);
+        }
+
+        .entry-label {
+            display: block;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .entry-text {
+            font-size: 20px;
+            line-height: 1.8;
+            word-break: break-word;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+        }
+
+        .entry-text.censored {
+            color: #1d1d1d;
+            letter-spacing: 2px;
+            text-shadow: 0 0 1px rgba(0,0,0,0.2);
         }
 
         .count-display {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(0, 0, 0, 0.85);
-            color: #fff;
+            right: 28px;
+            bottom: 28px;
+            z-index: 30;
+            background: rgba(0,0,0,0.82);
+            color: #f7efe6;
+            border: 1px solid rgba(255,255,255,0.18);
             padding: 12px 18px;
-            border-radius: 3px;
             font-size: 14px;
-            font-family: 'Noto Serif KR', serif;
-            font-weight: bold;
-            border: 1px solid #666;
-            z-index: 100;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.24);
         }
 
-        /* 경고 화면 */
+        .count-display strong {
+            color: #f7d38a;
+        }
+
         .warning-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #4a0000;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(32,0,0,0.9), rgba(68,0,0,0.92));
             display: none;
-            z-index: 9999;
-            justify-content: center;
             align-items: center;
-            flex-direction: column;
-            animation: warningPulse 0.12s infinite;
+            justify-content: center;
+            z-index: 100;
+            overflow: hidden;
         }
 
         .warning-screen.active {
             display: flex;
         }
 
-        @keyframes warningPulse {
-            0% {
-                background: #4a0000;
-                transform: translate(0, 0);
-            }
-            20% {
-                background: #6b0000;
-                transform: translate(-3px, 2px);
-            }
-            40% {
-                background: #4a0000;
-                transform: translate(3px, -2px);
-            }
-            60% {
-                background: #8b0000;
-                transform: translate(-2px, -3px);
-            }
-            80% {
-                background: #4a0000;
-                transform: translate(2px, 3px);
-            }
-            100% {
-                background: #4a0000;
-                transform: translate(0, 0);
-            }
-        }
-
         .warning-screen::before {
-            content: '';
+            content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: repeating-linear-gradient(
                 0deg,
-                rgba(255, 255, 255, 0.05) 0px,
-                rgba(255, 255, 255, 0.05) 1px,
-                transparent 1px,
-                transparent 3px
+                rgba(255,255,255,0.03) 0,
+                rgba(255,255,255,0.03) 2px,
+                transparent 2px,
+                transparent 4px
             );
+        }
+
+        .warning-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #ffb3b3;
+            font-weight: 900;
+            text-shadow: 0 0 12px rgba(255,0,0,0.8);
+            line-height: 1.6;
+            letter-spacing: 4px;
+            font-size: clamp(28px, 5vw, 64px);
+            animation: warningFlash 0.18s infinite alternate;
+        }
+
+        .warning-inner p {
+            margin: 0;
+        }
+
+        .glitch-layer {
+            position: absolute;
+            inset: 0;
             pointer-events: none;
             z-index: 1;
         }
 
-        .warning-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            color: #ff6b6b;
-            font-size: clamp(24px, 5vw, 56px);
-            font-weight: 900;
-            letter-spacing: 3px;
-            line-height: 1.8;
-            text-shadow: 0 0 10px #ff0000, 0 0 20px rgba(255, 0, 0, 0.5);
-            animation: warnTextFlash 0.2s infinite;
-        }
-
-        @keyframes warnTextFlash {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-            }
-        }
-
-        .glitch-lines {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
         .glitch-line {
             position: absolute;
+            left: 0;
             width: 100%;
-            height: 2px;
-            background: rgba(255, 0, 0, 0.3);
-            animation: glitchMove 0.1s infinite;
+            height: 3px;
+            background: rgba(255, 90, 90, 0.32);
+            animation: glitchMove 0.12s infinite alternate;
         }
 
         @keyframes glitchMove {
-            0% {
-                transform: translateX(-10px);
+            0% { transform: translateX(-16px); }
+            50% { transform: translateX(18px); }
+            100% { transform: translateX(-14px); }
+        }
+
+        @keyframes warningFlash {
+            from {
+                opacity: 1;
+                transform: scale(1);
             }
-            50% {
-                transform: translateX(10px);
+            to {
+                opacity: 0.78;
+                transform: scale(1.04);
             }
-            100% {
-                transform: translateX(-10px);
+        }
+
+        @media (max-width: 680px) {
+            body {
+                padding: 16px;
+            }
+
+            .newspaper {
+                padding: 18px 16px 14px;
+            }
+
+            .top-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .input-panel {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .small-header {
+                font-size: 9px;
+                letter-spacing: 2px;
+            }
+
+            .count-display {
+                right: 14px;
+                bottom: 14px;
             }
         }
     </style>
@@ -285,104 +412,144 @@
 <body>
     <div class="newspaper">
         <div class="content">
-            <div class="header">
-                <h1>신문</h1>
-                <p>1980년 대</p>
+            <div class="masthead">
+                <div class="small-header">
+                    <span>민중 공보</span>
+                    <span>제 40호</span>
+                    <span>1984년 7월 12일</span>
+                </div>
+                <div class="issue-name">
+                    <span class="left">◈</span>
+                    <span>신문</span>
+                    <span class="right">◈</span>
+                </div>
+                <div class="subhead">감시와 검열의 시대, 공공의 목소리를 기록하다</div>
             </div>
-            
-            <div class="input-area">
-                <input type="text" id="textInput" placeholder="글자를 입력하세요" inputmode="text">
-                <button id="sendBtn">입력</button>
+
+            <div class="top-grid">
+                <div class="headline-box">
+                    <h2>정부의 눈은 어디까지 닿는가 — 언어마저 조심스러운 오늘</h2>
+                    <p>
+                        밤거리의 기계적 경고음이 멈춘 뒤에도, 사람들의 말은 여전히 깜깜한 벽에 부딪히고 있다.
+                        회의 끝에 남겨진 단 한 줄의 문장은 언제나 조심스레 검사가 되며, 누군가는 입을 다물고,
+                        누군가는 마지막 문장을 남기고 자취를 감춘다.
+                    </p>
+                </div>
+
+                <div class="article-box">
+                    <div class="tag">특집</div>
+                    <h3>언론의 신문이 되는 순간</h3>
+                    <p>
+                        공공의 이익을 위해 취재된 기록이, 때로는 국가의 윤곽을 숨기기 위한 장치가 되기도 한다.
+                    </p>
+                </div>
             </div>
-            
+
+            <div class="input-panel">
+                <input type="text" id="textInput" placeholder="기록할 문장을 입력하세요" maxlength="120">
+                <button id="sendBtn">기록하기</button>
+            </div>
+
             <div class="display-area" id="displayArea"></div>
         </div>
     </div>
 
-    <div class="count-display">
-        검열: <span id="censorCount">0</span>/5
-    </div>
+    <div class="count-display">검열: <strong id="censorCount">0</strong>/5</div>
 
-    <div class="warning-screen" id="warningScreen">
-        <div class="glitch-lines" id="glitchContainer"></div>
-        <div class="warning-content">
-            ⚠️<br>
-            당신은<br>
-            중앙정부의<br>
-            추적을<br>
-            받고<br>
-            있습니다<br>
-            ⚠️
+    <div class="warning-screen" id="warningScreen" aria-live="assertive">
+        <div class="glitch-layer" id="glitchContainer"></div>
+        <div class="warning-inner">
+            <p>⚠️</p>
+            <p>당신은</p>
+            <p>감시망 속에</p>
+            <p>있습니다</p>
+            <p>⚠️</p>
         </div>
     </div>
 
     <script>
+        const MAX_CENSOR = 5;
         let censorCount = 0;
         let isWarningActive = false;
 
-        function sendText() {
-            const textInput = document.getElementById('textInput');
-            const text = textInput.value.trim();
+        const displayArea = document.getElementById('displayArea');
+        const textInput = document.getElementById('textInput');
+        const countDisplay = document.getElementById('censorCount');
+        const warningScreen = document.getElementById('warningScreen');
+        const glitchContainer = document.getElementById('glitchContainer');
 
-            if (text.length === 0) return;
+        function addEntry(text) {
+            const entry = document.createElement('div');
+            entry.className = 'entry';
 
-            const line = document.createElement('div');
-            line.className = 'text-line';
-            line.textContent = text;
+            const label = document.createElement('span');
+            label.className = 'entry-label';
+            label.textContent = '기록됨';
 
-            const displayArea = document.getElementById('displayArea');
-            displayArea.appendChild(line);
+            const content = document.createElement('div');
+            content.className = 'entry-text';
+            content.textContent = text;
+
+            entry.appendChild(label);
+            entry.appendChild(content);
+            displayArea.appendChild(entry);
             displayArea.scrollTop = displayArea.scrollHeight;
 
-            textInput.value = '';
-
-            setTimeout(() => {
-                let censored = '';
-                for (let i = 0; i < text.length; i++) {
-                    if (text[i] === ' ') {
-                        censored += ' ';
-                    } else {
-                        censored += '█';
-                    }
-                }
-                line.textContent = censored;
-
-                censorCount++;
-                document.getElementById('censorCount').textContent = censorCount;
-
-                if (censorCount >= 5 && !isWarningActive) {
-                    isWarningActive = true;
-                    activateWarning();
-                }
-            }, 1000);
-
-            textInput.focus();
+            return content;
         }
 
         function activateWarning() {
-            const warningScreen = document.getElementById('warningScreen');
-            const glitchContainer = document.getElementById('glitchContainer');
-
+            isWarningActive = true;
             warningScreen.classList.add('active');
+            glitchContainer.innerHTML = '';
 
-            // 글리치 라인 생성
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 16; i++) {
                 const line = document.createElement('div');
                 line.className = 'glitch-line';
-                line.style.top = Math.random() * 100 + '%';
-                line.style.animationDelay = Math.random() * 0.1 + 's';
+                line.style.top = (Math.random() * 100) + '%';
+                line.style.animationDelay = (Math.random() * 0.15) + 's';
                 glitchContainer.appendChild(line);
             }
         }
 
+        function sendText() {
+            const text = textInput.value.trim();
+            if (!text) {
+                textInput.focus();
+                return;
+            }
+
+            const readable = addEntry(text);
+            textInput.value = '';
+            textInput.focus();
+
+            setTimeout(() => {
+                const censored = text
+                    .split('')
+                    .map((char) => (char === ' ' ? ' ' : '█'))
+                    .join('');
+
+                readable.textContent = censored;
+                readable.classList.add('censored');
+
+                censorCount += 1;
+                countDisplay.textContent = censorCount;
+
+                if (censorCount >= MAX_CENSOR && !isWarningActive) {
+                    activateWarning();
+                }
+            }, 850);
+        }
+
         document.getElementById('sendBtn').addEventListener('click', sendText);
-        document.getElementById('textInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+
+        textInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
                 sendText();
             }
         });
 
-        document.getElementById('textInput').focus();
+        textInput.focus();
     </script>
 </body>
 </html>
