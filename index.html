@@ -37,10 +37,126 @@
             justify-content: center;
             padding: 28px;
             background:
-                radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 60%),
-                linear-gradient(135deg, #111 0%, #1c1c1c 100%);
+                radial-gradient(circle at 16% 18%, rgba(0,0,0,0.15) 0%, transparent 18%),
+                radial-gradient(circle at 82% 30%, rgba(0,0,0,0.12) 0%, transparent 20%),
+                radial-gradient(circle at 50% 76%, rgba(0,0,0,0.12) 0%, transparent 18%),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0,0,0,0.018) 0px,
+                    rgba(0,0,0,0.018) 1px,
+                    transparent 1px,
+                    transparent 5px
+                ),
+                linear-gradient(180deg, #d4bb8d 0%, #caa878 18%, #b78d5d 100%);
             font-family: 'Noto Serif KR', serif;
             color: var(--ink);
+        }
+
+        .page-container {
+            width: 100%;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-screen {
+            position: absolute;
+            width: min(420px, 100%);
+            padding: 56px 40px;
+            text-align: center;
+            background: rgba(245, 230, 211, 0.8);
+            border: 8px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 0 30px rgba(0,0,0,0.1);
+            z-index: 50;
+        }
+
+        .login-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.03) 0,
+                rgba(0,0,0,0.03) 1px,
+                transparent 1px,
+                transparent 4px
+            );
+            pointer-events: none;
+        }
+
+        .login-screen h1,
+        .login-screen p,
+        .login-screen input,
+        .login-screen button,
+        .login-error {
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-screen h1 {
+            font-size: 48px;
+            letter-spacing: 6px;
+            color: var(--ink);
+            font-weight: 900;
+            margin-bottom: 28px;
+        }
+
+        .login-screen p {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .login-screen input {
+            width: 100%;
+            padding: 14px 12px;
+            margin-bottom: 14px;
+            border: 2px solid var(--ink);
+            background: rgba(255,255,255,0.9);
+            font-family: 'Noto Serif KR', serif;
+            font-size: 16px;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .login-screen input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.15);
+        }
+
+        .login-screen button {
+            width: 100%;
+            padding: 14px 12px;
+            border: 2px solid var(--ink);
+            background: var(--ink);
+            color: var(--paper);
+            font-family: 'Noto Serif KR', serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .login-screen button:active {
+            background: var(--dark);
+        }
+
+        .login-error {
+            display: none;
+            margin-top: 12px;
+            color: #c80d0d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .login-screen.hidden {
+            display: none;
         }
 
         .newspaper {
@@ -53,6 +169,11 @@
                 inset 0 0 38px rgba(0,0,0,0.08);
             padding: 26px 30px 18px;
             overflow: hidden;
+            display: none;
+        }
+
+        .newspaper.active {
+            display: block;
         }
 
         .newspaper::before,
@@ -292,6 +413,11 @@
             font-size: 14px;
             letter-spacing: 2px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.24);
+            display: none;
+        }
+
+        .count-display.show {
+            display: block;
         }
 
         .count-display strong {
@@ -410,51 +536,60 @@
     </style>
 </head>
 <body>
-    <div class="newspaper">
-        <div class="content">
-            <div class="masthead">
-                <div class="small-header">
-                    <span>민중 공보</span>
-                    <span>제 40호</span>
-                    <span>1984년 7월 12일</span>
+    <div class="page-container">
+        <div class="login-screen" id="loginScreen">
+            <h1>신문</h1>
+            <p>비밀번호를 입력하세요</p>
+            <input type="text" id="passwordInput" placeholder="비밀번호" inputmode="numeric">
+            <button id="loginBtn">입력</button>
+            <div class="login-error" id="loginError">비밀번호가 잘못되었습니다</div>
+        </div>
+
+        <div class="newspaper" id="newspaperScreen">
+            <div class="content">
+                <div class="masthead">
+                    <div class="small-header">
+                        <span>민중 공보</span>
+                        <span>제 40호</span>
+                    </div>
+                    <div class="issue-name">
+                        <span class="left">◈</span>
+                        <span>신문</span>
+                        <span class="right">◈</span>
+                    </div>
+                    <div class="subhead">감시와 검열의 시대, 공공의 목소리를 기록하다</div>
                 </div>
-                <div class="issue-name">
-                    <span class="left">◈</span>
-                    <span>신문</span>
-                    <span class="right">◈</span>
+
+                <div class="top-grid">
+                    <div class="headline-box">
+                        <h2>정부의 눈은 어디까지 닿는가 — 언어마저 조심스러운 오늘</h2>
+                        <p>
+                            밤거리의 기계적 경고음이 멈춘 뒤에도, 사람들의 말은 여전히 깜깜한 벽에 부딪히고 있다.
+                            회의 끝에 남겨진 단 한 줄의 문장은 언제나 조심스레 검사가 되며, 누군가는 입을 다물고,
+                            누군가는 마지막 문장을 남기고 자취를 감춘다.
+                        </p>
+                    </div>
+
+                    <div class="article-box">
+                        <div class="tag">특집</div>
+                        <h3>언론의 신문이 되는 순간</h3>
+                        <p>
+                            공공의 이익을 위해 취재된 기록이, 때로는 국가의 윤곽을 숨기기 위한 장치가 되기도 한다.
+                        </p>
+                    </div>
                 </div>
-                <div class="subhead">감시와 검열의 시대, 공공의 목소리를 기록하다</div>
+
+                <div class="input-panel">
+                    <input type="text" id="textInput" placeholder="기록할 문장을 입력하세요" maxlength="120">
+                    <button id="sendBtn">기록하기</button>
+                </div>
+
+                <div class="display-area" id="displayArea"></div>
             </div>
-
-            <div class="top-grid">
-                <div class="headline-box">
-                    <h2>정부의 눈은 어디까지 닿는가 — 언어마저 조심스러운 오늘</h2>
-                    <p>
-                        밤거리의 기계적 경고음이 멈춘 뒤에도, 사람들의 말은 여전히 깜깜한 벽에 부딪히고 있다.
-                        회의 끝에 남겨진 단 한 줄의 문장은 언제나 조심스레 검사가 되며, 누군가는 입을 다물고,
-                        누군가는 마지막 문장을 남기고 자취를 감춘다.
-                    </p>
-                </div>
-
-                <div class="article-box">
-                    <div class="tag">특집</div>
-                    <h3>언론의 신문이 되는 순간</h3>
-                    <p>
-                        공공의 이익을 위해 취재된 기록이, 때로는 국가의 윤곽을 숨기기 위한 장치가 되기도 한다.
-                    </p>
-                </div>
-            </div>
-
-            <div class="input-panel">
-                <input type="text" id="textInput" placeholder="기록할 문장을 입력하세요" maxlength="120">
-                <button id="sendBtn">기록하기</button>
-            </div>
-
-            <div class="display-area" id="displayArea"></div>
         </div>
     </div>
 
-    <div class="count-display">검열: <strong id="censorCount">0</strong>/5</div>
+    <div class="count-display" id="countDisplay">검열: <strong id="censorCount">0</strong>/5</div>
 
     <div class="warning-screen" id="warningScreen" aria-live="assertive">
         <div class="glitch-layer" id="glitchContainer"></div>
@@ -468,15 +603,43 @@
     </div>
 
     <script>
+        const CORRECT_PASSWORD = '1987';
         const MAX_CENSOR = 5;
         let censorCount = 0;
         let isWarningActive = false;
 
+        const loginScreen = document.getElementById('loginScreen');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        
+        const newspaperScreen = document.getElementById('newspaperScreen');
         const displayArea = document.getElementById('displayArea');
         const textInput = document.getElementById('textInput');
         const countDisplay = document.getElementById('censorCount');
         const warningScreen = document.getElementById('warningScreen');
         const glitchContainer = document.getElementById('glitchContainer');
+
+        function login() {
+            const password = passwordInput.value.trim();
+            if (password === CORRECT_PASSWORD) {
+                loginScreen.classList.add('hidden');
+                newspaperScreen.classList.add('active');
+                document.getElementById('countDisplay').classList.add('show');
+                textInput.focus();
+            } else {
+                loginError.style.display = 'block';
+                passwordInput.value = '';
+                setTimeout(() => {
+                    loginError.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        loginBtn.addEventListener('click', login);
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login();
+        });
 
         function addEntry(text) {
             const entry = document.createElement('div');
@@ -549,7 +712,7 @@
             }
         });
 
-        textInput.focus();
+        passwordInput.focus();
     </script>
 </body>
 </html>
